@@ -50,7 +50,8 @@ public class Folder {
         FolderMoved folderMoved = new FolderMoved(this);
         folderMoved.publishAfterCommit();
     }
-    //>>> Clean Arch / Port Method
 
+    //>>> Clean Arch / Port Method
+    public void shareFolder(ShareFolderCommand shareFolderCommand) {}
 }
 //>>> DDD / Aggregate Root
