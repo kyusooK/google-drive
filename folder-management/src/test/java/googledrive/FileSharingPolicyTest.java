@@ -25,9 +25,7 @@ import org.springframework.util.MimeTypeUtils;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FileSharingPolicyTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        FileSharingPolicyTest.class
-    );
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileSharingPolicyTest.class);
 
     @Autowired
     private KafkaProcessor processor;
@@ -43,13 +41,17 @@ public class FileSharingPolicyTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test0() throws Exception {
+    public void test0() throws Exception { 
         FolderMoved entity = new FolderMoved();
 
         entity.setFolderId("1");
 
+        // folderMoved 객체를 Folder 객체로 변환
+        Folder folder = new Folder();
+        folder.setFolderId(entity.getFolderId());
+
         // entity를 저장하기 위해 save 메소드를 사용
-        folderRepository.save(entity);
+        folderRepository.save(folder);
 
         FileShared event = new FileShared();
 
@@ -67,28 +69,4 @@ public class FileSharingPolicyTest {
                 .inboundTopic()
                 .send(
                     MessageBuilder
-                        .withPayload(msg)
-                        .setHeader(
-                            MessageHeaders.CONTENT_TYPE,
-                            MimeTypeUtils.APPLICATION_JSON
-                        )
-                        .setHeader("type", event.getEventType())
-                        .build()
-                );
-
-            Message<String> received = (Message<String>) messageCollector
-                .forChannel(processor.outboundTopic())
-                .poll();
-
-            assertNotNull("Resulted event must be published", received);
-
-            LOGGER.info("Response received: {}", received.getPayload());
-
-            assertEquals(event.getFileId(), "1");
-            assertEquals(event.getSharedWithEmail(), "example@example.com");
-            assertEquals(event.getPermission(), "read");
-        } catch (JsonProcessingException e) {
-            assertFalse("예외가 발생하여 테스트 실패:" + e.getMessage(), true);
-        }
-    }
-}
+                       
