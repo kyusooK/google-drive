@@ -41,7 +41,7 @@ public class FileSharingPolicyTest {
     private ApplicationContext applicationContext;
 
     @Autowired
-    public FolderMovedRepository repository;
+    public FolderRepository repository;
 
     @Test
     @SuppressWarnings("unchecked")
