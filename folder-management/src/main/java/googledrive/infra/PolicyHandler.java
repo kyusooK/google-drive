@@ -12,7 +12,6 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-//<<< Clean Arch / Inbound Adaptor
 @Service
 @Transactional
 public class PolicyHandler {
@@ -35,7 +34,11 @@ public class PolicyHandler {
             "\n\n##### listener FileSharingPolicy : " + fileShared + "\n\n"
         );
         // Sample Logic //
-
+        Folder folder = Folder.repository().findById(event.getFileId()).get();
+        ShareFolderCommand shareFolderCommand = new ShareFolderCommand();
+        shareFolderCommand.setFolderId(folder.getFolderId());
+        shareFolderCommand.setSharedWithEmail(event.getSharedWithEmail());
+        shareFolderCommand.setPermission(event.getPermission());
+        folder.shareFolder(shareFolderCommand);
     }
 }
-//>>> Clean Arch / Inbound Adaptor
