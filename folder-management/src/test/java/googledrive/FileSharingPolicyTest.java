@@ -48,8 +48,8 @@ public class FileSharingPolicyTest {
 
         entity.setFolderId("1");
 
-        // entity를 저장하기 위해 saveFolder 메소드를 사용
-        folderRepository.saveFolder(entity);
+        // entity를 저장하기 위해 save 메소드를 사용
+        folderRepository.save(entity);
 
         FileShared event = new FileShared();
 
