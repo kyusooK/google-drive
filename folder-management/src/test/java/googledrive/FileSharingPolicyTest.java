@@ -39,7 +39,7 @@ public class FileSharingPolicyTest {
     private ApplicationContext applicationContext;
 
     @Autowired
-    public FolderRepository repository;
+    public FolderRepository folderRepository;
 
     @Test
     @SuppressWarnings("unchecked")
@@ -48,7 +48,8 @@ public class FileSharingPolicyTest {
 
         entity.setFolderId("1");
 
-        repository.save(entity);
+        // entity를 저장하기 위해 saveFolder 메소드를 사용
+        folderRepository.saveFolder(entity);
 
         FileShared event = new FileShared();
 
