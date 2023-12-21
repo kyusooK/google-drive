@@ -1,8 +1,6 @@
 package googledrive;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +26,7 @@ import org.springframework.util.MimeTypeUtils;
 public class FileSharingPolicyTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
-        EventTest.class
+        FileSharingPolicyTest.class
     );
 
     @Autowired
@@ -45,16 +43,12 @@ public class FileSharingPolicyTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void test0() {
-        //given:
+    public void test0() throws Exception {
         FolderMoved entity = new FolderMoved();
 
         entity.setFolderId("1");
-        entity.setFolderName("Folder1");
 
         repository.save(entity);
-
-        //when:
 
         FileShared event = new FileShared();
 
@@ -62,7 +56,7 @@ public class FileSharingPolicyTest {
         event.setSharedWithEmail("example@example.com");
         event.setPermission("read");
 
-        InventoryApplication.applicationContext = applicationContext;
+        FolderManagementApplication.applicationContext = applicationContext;
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -81,8 +75,6 @@ public class FileSharingPolicyTest {
                         .build()
                 );
 
-            //then:
-
             Message<String> received = (Message<String>) messageCollector
                 .forChannel(processor.outboundTopic())
                 .poll();
@@ -91,15 +83,11 @@ public class FileSharingPolicyTest {
 
             LOGGER.info("Response received: {}", received.getPayload());
 
-            assertEquals(outputEvent.getFolderId(), "1");
-            assertEquals(
-                outputEvent.getSharedWithEmail(),
-                "example@example.com"
-            );
-            assertEquals(outputEvent.getPermission(), "read");
+            assertEquals(event.getFileId(), "1");
+            assertEquals(event.getSharedWithEmail(), "example@example.com");
+            assertEquals(event.getPermission(), "read");
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            assertTrue("exception", false);
+            assertFalse("예외가 발생하여 테스트 실패:" + e.getMessage(), true);
         }
     }
 }
